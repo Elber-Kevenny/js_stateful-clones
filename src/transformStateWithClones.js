@@ -7,10 +7,11 @@
  */
 
 function transformStateWithClones(state, actions) {
-  const contagem = [{ ...state }];
+  const contagem = [];
 
   for (const n of actions) {
-    const lastState = contagem[contagem.length - 1];
+    const lastState =
+      contagem.length > 0 ? contagem[contagem.length - 1] : state;
     let newState = { ...lastState };
 
     switch (n.type) {
