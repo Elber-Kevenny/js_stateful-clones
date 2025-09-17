@@ -7,11 +7,10 @@
  */
 
 function transformStateWithClones(state, actions) {
-  const contagem = [];
+  const count = [];
 
   for (const n of actions) {
-    const lastState =
-      contagem.length > 0 ? contagem[contagem.length - 1] : state;
+    const lastState = count.length > 0 ? count[count.length - 1] : state;
     let newState = { ...lastState };
 
     switch (n.type) {
@@ -20,19 +19,25 @@ function transformStateWithClones(state, actions) {
         break;
 
       case 'removeProperties':
-        for (const key of n.keysToRemove) {
-          delete newState[key];
+        if (Array.isArray(n.keysToRemove)) {
+          for (const key of n.keysToRemove) {
+            delete newState[key];
+          }
+        } else {
+          return 'keysToRemove is not a Array';
         }
         break;
-
       case 'clear':
         newState = {};
         break;
+
+      default:
+        throw new Error(`Unknown action type: ${n.type}`);
     }
-    contagem.push(newState);
+    count.push(newState);
   }
 
-  return contagem;
+  return count;
 }
 
 module.exports = transformStateWithClones;
