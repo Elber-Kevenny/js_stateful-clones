@@ -7,37 +7,36 @@
  */
 
 function transformStateWithClones(state, actions) {
-  const count = [];
+  const stateHistory = [];
 
-  for (const n of actions) {
-    const lastState = count.length > 0 ? count[count.length - 1] : state;
-    let newState = { ...lastState };
+  for (const action of actions) {
+    const previousState =
+      stateHistory.length > 0 ? stateHistory[stateHistory.length - 1] : state;
+    let nextState = { ...previousState };
 
-    switch (n.type) {
+    switch (action.type) {
       case 'addProperties':
-        Object.assign(newState, n.extraData);
+        Object.assign(nextState, action.extraData);
         break;
 
       case 'removeProperties':
-        if (Array.isArray(n.keysToRemove)) {
-          for (const key of n.keysToRemove) {
-            delete newState[key];
+        if (Array.isArray(action.keysToRemove)) {
+          for (const key of action.keysToRemove) {
+            delete nextState[key];
           }
-        } else {
-          return 'keysToRemove is not a Array';
         }
         break;
       case 'clear':
-        newState = {};
+        nextState = {};
         break;
 
       default:
-        throw new Error(`Unknown action type: ${n.type}`);
+        throw new Error(`Unknown action type: ${action.type}`);
     }
-    count.push(newState);
+    stateHistory.push(nextState);
   }
 
-  return count;
+  return stateHistory;
 }
 
 module.exports = transformStateWithClones;
